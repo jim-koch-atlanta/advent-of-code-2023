@@ -92,7 +92,7 @@ public class Main {
         return gameNumber;
     }
 
-    public static void main(String[] args) {
+    public static void main_part1(String[] args) {
         COLOR_COUNT = new HashMap<String, Integer>();
         COLOR_COUNT.put("red", 12);
         COLOR_COUNT.put("green", 13);
@@ -115,5 +115,97 @@ public class Main {
         }
 
         System.out.printf("Total: %d", total);
+    }
+
+    public static Integer[] getPullCounts(String pull) {
+        int red = 0;
+        int green = 0;
+        int blue = 0;
+
+        while (!pull.isEmpty()) {
+            int comma = pull.indexOf(',');
+            String currentColor = "";
+            if (comma >= 0) {
+                currentColor = pull.substring(0, comma);
+                pull = pull.substring(comma + 2); // Skip comma AND space.
+            } else {
+                currentColor = pull;
+                pull = "";
+            }
+
+            int space = currentColor.indexOf(' ');
+            int count = Integer.parseInt(currentColor.substring(0, space));
+            String color = currentColor.substring(space + 1);
+
+            if (color.equals("red")) {
+                red = count;
+            } else if (color.equals("green")) {
+                green = count;
+            } else if (color.equals("blue")) {
+                blue = count;
+            }
+        }
+
+        return new Integer[]{red, green, blue};
+    }
+
+    /**
+     * This function will evaluate a line of text like:
+     *    Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
+     * It will determine the "game power". This is done by identifying the
+     * max number of red, green, and blue that were pulled in that game,
+     * and then multiplying them together.
+     * @param line The line of text representing the game.
+     * @return The game power.
+     */
+    public static int getGamePower(String line) {
+        // Get the game number.
+        line = line.substring(5);
+        int colon = line.indexOf(':');
+        int gameNumber = Integer.parseInt(line.substring(0, colon));
+        line = line.substring(colon + 2); // Skip colon AND space.
+
+        int maxRed = 0;
+        int maxGreen = 0;
+        int maxBlue = 0;
+
+        // We stripped off the game number.  Now iterate through the "bag pulls".
+        while (!line.isEmpty()) {
+            String currentPull = "";
+            int semicolon = line.indexOf(';');
+            if (semicolon >= 0) {
+                currentPull = line.substring(0, semicolon);
+                line = line.substring(semicolon + 2); // Skip semicolon AND space.
+            } else {
+                currentPull = line;
+                line = "";
+            }
+            System.out.println("Current pull: " + currentPull);
+            Integer[] currentPullPower = getPullCounts(currentPull);
+            maxRed = Math.max(maxRed, currentPullPower[0]);
+            maxGreen = Math.max(maxGreen, currentPullPower[1]);
+            maxBlue = Math.max(maxBlue, currentPullPower[2]);
+        }
+        return maxRed * maxGreen * maxBlue;
+    }
+
+    public static void main(String[] args) {
+        String fileName = "src/input.txt"; // Specify the path to your text file
+
+        int totalGamePower = 0;
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(fileName));
+            String line = br.readLine();
+            // Read lines from the file until the end is reached
+            while (line != null) {
+                int gamePower = getGamePower(line);
+                totalGamePower += gamePower;
+                line = br.readLine();
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading the file: " + e.getMessage());
+        }
+
+        System.out.printf("Total: %d", totalGamePower);
     }
 }
