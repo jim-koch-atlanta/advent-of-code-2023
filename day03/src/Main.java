@@ -109,55 +109,116 @@ public class Main {
         System.out.println("Sum of gear ratios: " + sumOfGearRatios);
     }
 
+    public static Integer getAdjacentLeftNumber(String line, int i, int j) {
+        boolean foundANumber = false;
+        StringBuilder number = new StringBuilder();
+        while ((j >= 0) && (Character.isDigit(line.charAt(j)))) {
+            foundANumber = true;
+            number.append(line.charAt(j));
+            j--;
+        }
+
+        if (foundANumber) {
+            return Integer.parseInt(number.reverse().toString());
+        }
+
+        return null;
+    }
+
+    public static Integer getAdjacentRightNumber(String line, int i, int j) {
+        boolean foundANumber = false;
+        int number = 0;
+        while ((j < line.length()) && (Character.isDigit(line.charAt(j)))) {
+            foundANumber = true;
+            number = number * 10 + (line.charAt(j) - '0');
+            j++;
+        }
+
+        if (foundANumber) {
+            return number;
+        }
+
+        return null;
+    }
+
     public static ArrayList<Integer> getAdjacentPartNumbers(String[] schematic, int i, int j) {
         System.out.printf("Looking for numbers adjacent to [%02d, %02d]\n", i, j);
         ArrayList<Integer> adjacentPartNumbers = new ArrayList<>();
 
         // Check to the left.
-        boolean foundANumber = false;
-        int number = 0;
-        int tmpJ = j - 1;
-        while ((tmpJ >= 0) && (Character.isDigit(schematic[i].charAt(tmpJ)))) {
-            foundANumber = true;
-            number = number * 10 + (schematic[i].charAt(tmpJ) - '0');
-            tmpJ--;
-        }
-
-        if (foundANumber) {
-            number = Integer.parseInt(new StringBuilder(Integer.toString(number)).reverse().toString());
-            System.out.println("Found a number to the left: " + number);
-            adjacentPartNumbers.add(number);
+        Integer leftNumber = getAdjacentLeftNumber(schematic[i], i, j - 1);
+        if (leftNumber != null) {
+            System.out.println("Found a number to the left: " + leftNumber);
+            adjacentPartNumbers.add(leftNumber);
         }
 
         // Check to the right.
-        foundANumber = false;
-        number = 0;
-        tmpJ = j + 1;
-        while ((tmpJ < schematic[i].length()) && (Character.isDigit(schematic[i].charAt(tmpJ)))) {
-            foundANumber = true;
-            number = number * 10 + (schematic[i].charAt(tmpJ) - '0');
-            tmpJ++;
-        }
-
-        if (foundANumber) {
-            System.out.println("Found a number to the right: " + number);
-            adjacentPartNumbers.add(number);
+        Integer rightNumber = getAdjacentRightNumber(schematic[i], i, j + 1);
+        if (rightNumber != null) {
+            System.out.println("Found a number to the right: " + rightNumber);
+            adjacentPartNumbers.add(rightNumber);
         }
 
         // Check directly above.
-        if ((i > 0) && (Character.isDigit(schematic[i].charAt(j)))) {
+        if (i > 0) {
+            if (Character.isDigit(schematic[i - 1].charAt(j))) {
+                // Find the left-most digit of the number.
+                int tmpJ = j;
+                while (tmpJ >= 0 && Character.isDigit(schematic[i - 1].charAt(tmpJ))) {
+                    tmpJ--;
+                }
 
-        } else {
-            // Check above left.
-            // Check above right.
+                rightNumber = getAdjacentRightNumber(schematic[i - 1], i - 1, tmpJ + 1);
+                if (rightNumber != null) {
+                    System.out.println("Found a number above: " + rightNumber);
+                    adjacentPartNumbers.add(rightNumber);
+                }
+            } else {
+                // Check above left.
+                leftNumber = getAdjacentLeftNumber(schematic[i - 1], i - 1, j - 1);
+                if (leftNumber != null) {
+                    System.out.println("Found a number above-left: " + leftNumber);
+                    adjacentPartNumbers.add(leftNumber);
+                }
+
+                // Check above right.
+                rightNumber = getAdjacentRightNumber(schematic[i - 1], i - 1, j + 1);
+                if (rightNumber != null) {
+                    System.out.println("Found a number above-right: " + rightNumber);
+                    adjacentPartNumbers.add(rightNumber);
+                }
+            }
         }
 
         // Check directly below.
-        if ((i < schematic.length - 1) && (Character.isDigit(schematic[i].charAt(j)))) {
+        if (i < schematic.length - 1) {
+            if (Character.isDigit(schematic[i + 1].charAt(j))) {
+                // Find the left-most digit of the number.
+                int tmpJ = j;
+                while (tmpJ >= 0 && Character.isDigit(schematic[i + 1].charAt(tmpJ))) {
+                    tmpJ--;
+                }
 
-        } else {
-            // Check below left.
-            // Check below right.
+                rightNumber = getAdjacentRightNumber(schematic[i + 1], i - 1, tmpJ + 1);
+                if (rightNumber != null) {
+                    System.out.println("Found a number to the right: " + rightNumber);
+                    adjacentPartNumbers.add(rightNumber);
+                }
+            } else {
+                // Check below left.
+                leftNumber = getAdjacentLeftNumber(schematic[i + 1], i + 1, j - 1);
+                if (leftNumber != null) {
+                    System.out.println("Found a number below-left: " + leftNumber);
+                    adjacentPartNumbers.add(leftNumber);
+                }
+
+                // Check below right.
+                rightNumber = getAdjacentRightNumber(schematic[i + 1], i + 1, j + 1);
+                if (rightNumber != null) {
+                    System.out.println("Found a number below-right: " + rightNumber);
+                    adjacentPartNumbers.add(rightNumber);
+                }
+           }
         }
 
         return adjacentPartNumbers;
