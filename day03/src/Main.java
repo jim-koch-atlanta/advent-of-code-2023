@@ -10,6 +10,7 @@ public class Main {
             int lineNum,
             int startIndex,
             int endIndex) {
+
         if ((lineNum < 0) || (lineNum >= schematic.size())) {
             return false;
         }
