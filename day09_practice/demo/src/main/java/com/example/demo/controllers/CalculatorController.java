@@ -4,8 +4,6 @@ import com.example.demo.requests.EquationRequest;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
