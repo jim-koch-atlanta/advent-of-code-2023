@@ -39,12 +39,12 @@ public class CalculatorController {
     }
 
     public Entry<Boolean, Integer> isMultiplication(String equation) {
-        String regex = "^\\d+\\s?\\*\\s?\\d+$";
+        String regex = "^\\d+(\\.\\d+)?\\s?\\*\\s?\\d+(\\.\\d+)?$";
         if (equation.matches(regex)) {
             String[] operands = equation.split("\\s*\\*\\s*");
-            Integer i1 = Integer.parseInt(operands[0].trim());
-            Integer i2 = Integer.parseInt(operands[1].trim());
-            return new SimpleEntry<>(true, i1 * i2);
+            Float i1 = Float.parseFloat(operands[0].trim());
+            Float i2 = Float.parseFloat(operands[1].trim());
+            return new SimpleEntry<>(true, Math.round(i1 * i2));
         } else {
             return new SimpleEntry<>(false, null);
         }
