@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -20,5 +21,16 @@ public class ConversionMap {
         }
 
         return value;
+    }
+
+    public List<Pair<Long, Long>> convert(Long lower, Long upper) {
+        List<Pair<Long, Long>> values = new ArrayList<>();
+        for (ConversionMapElement element : elements) {
+            if (element.intersects(lower, upper)) {
+                values.add(element.convert(lower, upper));
+            }
+        }
+
+        return values;
     }
 }

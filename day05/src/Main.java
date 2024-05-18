@@ -7,7 +7,7 @@ import java.util.Vector;
 
 public class Main {
     static List<ConversionMap> maps;
-    static List<Long> seeds;
+    static List<Pair<Long, Long>> seeds;
 
     public static void readFile(String fileName) {
         try {
@@ -19,9 +19,12 @@ public class Main {
             String line = br.readLine();
             line = line.substring(7);
             String[] strSeeds = line.split(" ");
-            for (String strSeed : strSeeds) {
-                Long seed = Long.parseLong(strSeed);
-                seeds.add(seed);
+            for (int i = 0; i < strSeeds.length; i = i + 2) {
+                String strSeed1 = strSeeds[i];
+                String strSeed2 = strSeeds[i + 1];
+                Long seed1 = Long.parseLong(strSeed1);
+                Long seed2 = Long.parseLong(strSeed2);
+                seeds.add(new Pair<>(seed1, seed1 + seed2 - 1));
             }
 
             // Read the blank line.
@@ -54,7 +57,9 @@ public class Main {
             System.err.println("Error reading the file: " + e.getMessage());
         }
     }
-    public static void main(String[] args) {
+
+    /**
+    public static void main0(String[] args) {
         String fileName = "src/input.txt"; // Specify the path to your text file
         maps = new ArrayList<>();
         seeds = new Vector<>();
@@ -67,6 +72,29 @@ public class Main {
             }
             System.out.println("Final Seed: " + seed);
             System.out.println();
+        }
+    }
+*/
+
+    public static void main(String[] args) {
+        String fileName = "src/input.txt"; // Specify the path to your text file
+        maps = new ArrayList<>();
+        seeds = new ArrayList<>();
+        readFile(fileName);
+
+        List<Pair<Long, Long>> currentRanges = new ArrayList<>(seeds);
+        for (ConversionMap map : maps) {
+            List<Pair<Long, Long>> newRanges = new ArrayList<>();
+            for (Pair<Long, Long> currentRange : currentRanges) {
+                newRanges.addAll(map.convert(currentRange.getKey(), currentRange.getValue()));
+            }
+
+            currentRanges.clear();
+            currentRanges.addAll(newRanges);
+        }
+
+        for (Pair<Long, Long> p : currentRanges) {
+            System.out.println("Result: " + p);
         }
     }
 }
