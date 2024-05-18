@@ -84,17 +84,19 @@ public class Main {
 
         List<Pair<Long, Long>> currentRanges = new ArrayList<>(seeds);
         for (ConversionMap map : maps) {
-            List<Pair<Long, Long>> newRanges = new ArrayList<>();
-            for (Pair<Long, Long> currentRange : currentRanges) {
-                newRanges.addAll(map.convert(currentRange.getKey(), currentRange.getValue()));
-            }
-
+            List<Pair<Long, Long>> newRanges = map.convert(currentRanges);
             currentRanges.clear();
             currentRanges.addAll(newRanges);
         }
 
+        Long lowest = null;
         for (Pair<Long, Long> p : currentRanges) {
+            if (lowest == null || lowest > p.getKey()) {
+                lowest = p.getKey();
+            }
             System.out.println("Result: " + p);
         }
+
+        System.out.println("Lowest: " + lowest);
     }
 }

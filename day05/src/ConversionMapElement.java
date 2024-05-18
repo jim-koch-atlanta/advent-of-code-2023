@@ -17,8 +17,14 @@ public class ConversionMapElement {
         return value - sourceRangeStart + destinationRangeStart ;
     }
 
-    public boolean intersects(Long lower, Long upper) {
-        return ((lower <= sourceRangeStart + rangeLength - 1) && (sourceRangeStart <= upper));
+    public Pair<Long, Long> getIntersection(Long lower, Long upper) {
+        if ((lower <= sourceRangeStart + rangeLength - 1) && (sourceRangeStart <= upper)) {
+            Long intersectingLower = Math.max(lower, sourceRangeStart);
+            Long intersectingUpper = Math.min(upper, sourceRangeStart + rangeLength - 1);
+            return new Pair<Long, Long>(intersectingLower, intersectingUpper);
+        }
+
+        return null;
     }
 
     public Pair<Long, Long> convert(Long lower, Long upper) {
