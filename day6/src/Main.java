@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main_part1(String[] args) {
         String fileName = "src/input.txt"; // Specify the path to your text file
         times = new ArrayList<>();
         distanceRecords = new ArrayList<>();
@@ -69,4 +70,20 @@ public class Main {
         System.out.println(value);
     }
 
+    public static void main(String[] args) {
+        long time = 44806572;
+        BigInteger distance = new BigInteger("208158110501102");
+
+        long waysToWin = 0;
+        for (long velocity = 0; velocity <= time; velocity++) {
+            long timeMoving = time - velocity;
+            BigInteger biTimeMoving = new BigInteger(Long.toString(timeMoving));
+            BigInteger biVelocity = new BigInteger(Long.toString(velocity));
+            if (biTimeMoving.multiply(biVelocity).compareTo(distance) > 0) {
+                waysToWin++;
+            }
+        }
+
+        System.out.println(waysToWin);
+    }
 }
