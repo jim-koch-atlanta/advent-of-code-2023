@@ -26,10 +26,35 @@ public class Hand implements Comparable<Hand> {
             rankCounts.put(card, rankCounts.getOrDefault(card, 0) + 1);
         }
 
+        // Jacks are wild.
+        Integer jackCount = 0;
+        if (rankCounts.containsKey(CardRank.JACK) && (rankCounts.get(CardRank.JACK) != 5)) {
+            jackCount = rankCounts.get(CardRank.JACK);
+            rankCounts.remove(CardRank.JACK);
+        }
+
+        // Use the jacks for the max card that is the max count.
+        int maxCount = 0;
+        CardRank maxCountCard = null;
+        for (var entry : rankCounts.entrySet()) {
+            if (entry.getValue() > maxCount) {
+                maxCount = entry.getValue();
+                maxCountCard = entry.getKey();
+            } else if ((entry.getValue() == maxCount) &&
+                       ((maxCountCard == null) ||
+                        (entry.getKey().getRankValue() > maxCountCard.getRankValue()))) {
+                maxCountCard = entry.getKey();
+            }
+        }
+
+        if (maxCountCard != null) {
+            rankCounts.put(maxCountCard, maxCount + jackCount);
+        }
+
         // Determine the hand type based on counts
         boolean threeOfAKind = false;
         boolean pair = false;
-        int maxCount = 0;
+        maxCount = 0;
         int secondMaxCount = 0;
 
         for (int count : rankCounts.values()) {
